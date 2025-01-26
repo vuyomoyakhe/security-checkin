@@ -38,8 +38,10 @@
         }
 
         form {
-            display: flex;
+            display: flex ;
             flex-direction: column;
+            gap: 10px;
+            
         }
 
         label {
@@ -145,7 +147,7 @@
         
     </div>
     <footer>
-        © Copyright 2024 by SITA SOC Ltd.
+        © Copyright 2025 by SITA SOC Ltd.
     </footer>
 
     
@@ -208,32 +210,30 @@
 </html>
 
 
-// Time
+<!-- 
+Update time every second
+ -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Call the function to display current date and time
-        displayDateTime();
-    });
-
-    function displayDateTime() {
         const dateTimeElement = document.getElementById('date-time');
         
         function updateDateTime() {
             const currentDateTime = new Date();
             const options = { 
                 weekday: 'short', 
-                year: 'long', 
+                year: 'numeric', 
                 month: 'short', 
                 day: 'numeric', 
                 hour: '2-digit', 
                 minute: '2-digit', 
-                second: '2-digit' 
+                second: '2-digit'
             };
-            const formattedDateTime = currentDateTime.toLocaleDateString('en-US', options);
+            const formattedDateTime = currentDateTime.toLocaleString('en-US', options);
             dateTimeElement.textContent = formattedDateTime;
         }
 
-        // Update the date and time every second
+        // Update the date and time immediately and then every second
+        updateDateTime();
         setInterval(updateDateTime, 1000);
-    }
+    });
 </script>
