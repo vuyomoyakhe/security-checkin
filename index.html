@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITA Building Access Control System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    
+
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 150px; /* Adjust size */
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select {
+            margin-top: 5px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 500px;
+            font-size: 0.9em;
+            color: #666;
+            background-color: #f4f4f9;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        #date-time {
+            font-size: 1.0em;
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.jpg" alt="Company Logo" class="logo">
+        <h2>Building Access Control System</h2>
+        <div id="date-time"></div>
+    
+        
+        <form id="checkInForm">
+            <label for="userType">Select User Type:</label>
+            <select id="userType" required>
+                <option value="">-- Select --</option>
+                <option value="visitor">Visitor</option>
+                <option value="employee">Employee</option>
+            </select>
+        <!-- Visitor Fields -->
+            <div id="visitorFields" style="display: none;">
+                <label for="visitorName">Name:</label>
+                <input type="text" id="visitorName">
+                
+                <label for="visitorSurname">Surname:</label>
+                <input type="text" id="visitorSurname">
+
+                <label for="visitorID">ID/Passport No.:</label>
+                <input type="number" id="visitorID">
+
+                <label for="visitorPhone">Phone:</label>
+                <input type="number" id="visitorPhone">
+
+                <label for="personVisiting">Person Visiting:</label>
+                <input type="text" id="personVisiting">
+            </div>
+
+            <!-- Employee Fields -->
+            <div id="employeeFields" style="display: none;">
+                <label for="employeeNumber">Employee Number:</label>
+                <input type="text" id="employeeNumber">
+                
+                <label for="employeeName">Name:</label>
+                <input type="text" id="employeeName">
+                
+                <label for="employeeSurname">Surname:</label>
+                <input type="text" id="employeeSurname">
+
+                <label for="employeeID">ID/Passport No.:</label>
+                <input type="number" id="employeeID">
+
+                <label for="employeePhone">Phone:</label>
+                <input type="number" id="employeePhone">
+
+            </div>
+
+            <button type="submit">Submit</button>
+            <button id="logoutButton" style="margin-top: 20px;">Logout</button>
+        </form>
+        <a href="records.html" style="display: block; margin-top: 20px; text-align: center;">View Records</a>
+        
+        
+    </div>
+    <footer>
+        © Copyright 2024 by SITA SOC Ltd.
+    </footer>
+
+    
+
+    <script>
+        document.getElementById('userType').addEventListener('change', function () {
+            const userType = this.value;
+            document.getElementById('visitorFields').style.display = userType === 'visitor' ? 'block' : 'none';
+            document.getElementById('employeeFields').style.display = userType === 'employee' ? 'block' : 'none';
+        });
+
+        document.getElementById('checkInForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const userType = document.getElementById('userType').value;
+            const records = JSON.parse(localStorage.getItem('checkInRecords')) || [];
+            const formData = { userType, timestamp: new Date().toLocaleString() };
+
+            if (userType === 'visitor') {
+                formData.name = document.getElementById('visitorName').value;
+                formData.surname = document.getElementById('visitorSurname').value;
+                formData.idNumber = document.getElementById('visitorID').value;
+                formData.phone = document.getElementById('visitorPhone').value;
+                formData.personVisiting = document.getElementById('personVisiting').value;
+                
+            } else if (userType === 'employee') {
+                formData.employeeNumber = document.getElementById('employeeNumber').value;
+                formData.name = document.getElementById('employeeName').value;
+                formData.surname = document.getElementById('employeeSurname').value;
+                formData.phone = document.getElementById('employeePhone').value;
+                
+            }
+
+            records.push(formData);
+            localStorage.setItem('checkInRecords', JSON.stringify(records));
+            alert('Record saved successfully!');
+            this.reset();
+        })
+    
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn'); // Dummy session tracking
+    if (!isLoggedIn) {
+        window.location.href = 'login.html'; // Redirect to login page if not logged in
+    }
+        });
+
+    </script>
+
+
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            sessionStorage.removeItem('isLoggedIn'); // Clear session
+            window.location.href = 'login.html'; // Redirect to login page
+        });
+    </script>
+</body>
+</html>
+
+
+// Time
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Call the function to display current date and time
+        displayDateTime();
+    });
+
+    function displayDateTime() {
+        const dateTimeElement = document.getElementById('date-time');
+        
+        function updateDateTime() {
+            const currentDateTime = new Date();
+            const options = { 
+                weekday: 'short', 
+                year: 'long', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            };
+            const formattedDateTime = currentDateTime.toLocaleDateString('en-US', options);
+            dateTimeElement.textContent = formattedDateTime;
+        }
+
+        // Update the date and time every second
+        setInterval(updateDateTime, 1000);
+    }
+</script>

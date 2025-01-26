@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITA Building Access Control System - Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f9;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 600px;
+            font-size: 0.9em;
+            color: #666;
+            background-color: #f4f4f9;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Today's Records</h1>
+        <div id="records"></div>
+        <button id="backupRecords">Backup and Clear Records</button>
+        <button id="goHome">Go to Home Page</button>
+    </div>
+
+    <footer>
+        © Copyright 2024 by SITA SOC Ltd.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            displayRecords();
+
+            document.getElementById('backupRecords').addEventListener('click', function () {
+                if (confirm('Are you sure you want to backup and clear the records?')) {
+                    const adminCode = prompt('Please enter the admin code:');
+
+                    if (adminCode === 'admin123') {  // Replace 'admin123' with your actual admin code
+                        const records = JSON.parse(localStorage.getItem('checkInRecords')) || [];
+
+                        if (records.length === 0) {
+                            alert('No records to backup.');
+                            return;
+                        }
+
+                        let csvContent = "data:text/csv;charset=utf-8,";
+                        csvContent += "User Type,Name,Surname,ID Number,Phone,Person Visiting,Employee ID,Laptop Details,Timestamp\n";
+                        records.forEach(record => {
+                            const row = [
+                                record.userType,
+                                record.name || '-',
+                                record.surname || '-',
+                                record.idNumber || '-',
+                                record.phone || '-',
+                                record.personVisiting || '-',
+                                record.employee || '-',
+                                record.laptopDetails || '-',
+                                record.timestamp
+                            ].join(",");
+                            csvContent += row + "\n";
+                        });
+
+                        const encodedUri = encodeURI(csvContent);
+                        const link = document.createElement("a");
+                        link.setAttribute("href", encodedUri);
+                        link.setAttribute("download", `SITA_Records_${new Date ().toISOString().split('T')[0]}.csv`);
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        localStorage.removeItem('checkInRecords');
+                        alert('Records backed up and cleared.');
+                        displayRecords();
+                    } else {
+                        alert('Incorrect admin code. Action canceled.');
+                    }
+                }
+            });
+
+            document.getElementById('goHome').addEventListener('click', function () {
+                window.location.href = 'index.html';
+            });
+        });
+
+        function displayRecords() {
+            const records = JSON.parse(localStorage.getItem('checkInRecords')) || [];
+            const recordsContainer = document.getElementById('records');
+
+            if (records.length === 0) {
+                recordsContainer.innerHTML = '<p>No records found for today.</p>';
+                return;
+            }
+
+            const rows = records.map(record => `
+                <tr>
+                    <td>${record.userType}</td>
+                    <td>${record.name || '-'}</td>
+                    <td>${record.surname || '-'}</td>
+                    <td>${record.idNumber || '-'}</td>
+                    <td>${record.phone || '-'}</td>
+                    <td>${record.personVisiting || '-'}</td>
+                    <td>${record.employeeID || '-'}</td>
+                    <td>${record.laptopDetails || '-'}</td>
+                    <td>${record.timestamp}</td>
+                </tr>
+            `).join('');
+
+            recordsContainer.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Type</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>ID Number</th>
+                            <th>Phone</th>
+                            <th>Person Visiting</th>
+                            <th>Employee ID</th>
+                            <th>Laptop Details</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            `;
+        }
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn'); // Dummy session tracking
+        if (!isLoggedIn) {
+            window.location.href = 'login.html'; // Redirect to login page if not logged in
+            }
+        });
+    
+</script>
+</body>
+</html>
