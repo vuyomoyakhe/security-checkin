@@ -89,7 +89,7 @@
                 if (confirm('Are you sure you want to Download and Clear the records?')) {
                     const adminCode = prompt('Please enter the admin code:');
 
-                    if (adminCode === 'admin123') {  // Replace 'admin123' with your actual admin code
+                    if (adminCode === 'admin123') {  // admin code
                         const records = JSON.parse(localStorage.getItem('checkInRecords')) || [];
 
                         if (records.length === 0) {
@@ -123,7 +123,7 @@
                         document.body.removeChild(link);
 
                         localStorage.removeItem('checkInRecords');
-                        alert('Records backed up and cleared.');
+                        alert('Records saved up and cleared.');
                         displayRecords();
                     } else {
                         alert('Incorrect admin code. Action canceled.');
